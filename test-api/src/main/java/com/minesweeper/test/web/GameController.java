@@ -3,18 +3,14 @@ package com.minesweeper.test.web;
 import java.util.List;
 
 import javax.inject.Inject;
-import javax.validation.Valid;
 
-import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.minesweeper.test.dto.CreateGameRequest;
 import com.minesweeper.test.dto.GameResponse;
 import com.minesweeper.test.service.GameService;
 
@@ -23,6 +19,7 @@ import com.minesweeper.test.service.GameService;
  */
 @RestController
 @RequestMapping("/game")
+@CrossOrigin(origins = "*")
 public class GameController {
 	
 	private final GameService gameService;

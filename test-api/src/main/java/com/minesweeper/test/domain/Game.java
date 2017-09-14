@@ -39,12 +39,17 @@ public class Game {
 	@Column(name = "finishedOn")
 	private LocalTime finishedOn;
 
-	public final String NEW = "new";
-	public final String RESUMED = "resumed";
-	public final String PAUSED = "paused";
-	public final String LOST = "lost";
-	public final String WON = "won";
+	private final String NEW = "new";
+	private final String RESUMED = "resumed";
+	private final String PAUSED = "paused";
+	private final String LOST = "lost";
+	private final String WON = "won";
 
+	public Game(){
+		this.status = NEW;
+		this.startedOn = LocalTime.now();
+	}
+	
 	public Integer getId() {
 		return id;
 	}
@@ -88,6 +93,12 @@ public class Game {
 	public String getSolutionBoard() {
 		return solutionBoard;
 	}
+	
+	public String sweepCell(Integer position) {
+		String[] board = solutionBoard.split(",");
+		
+		return board[position-1];
+	}
 
 	public void setSolutionBoard(String solutionBoard) {
 		this.solutionBoard = solutionBoard;
@@ -103,6 +114,27 @@ public class Game {
 		gameResponse.setBoard(currentBoard);
 
 		return gameResponse;
+	}
+
+	public void gameOver() {
+		this.status = LOST;
+		this.finishedOn = LocalTime.now();
+		this.currentBoard = this.solutionBoard;
+	}
+	
+	public void win() {
+		this.status = WON;
+		this.finishedOn = LocalTime.now();
+		this.currentBoard = this.solutionBoard;
+	}
+
+	public void updateCurrentBoard(Integer position) {
+		String[] sboard = solutionBoard.split(",");		
+		String[] cboard = currentBoard.split(",");
+		
+		cboard[position-1] = sboard[position-1];
+		
+		this.currentBoard = String.join(",", cboard);		
 	}
 
 }

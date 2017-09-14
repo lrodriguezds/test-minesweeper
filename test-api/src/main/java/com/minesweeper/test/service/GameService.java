@@ -1,6 +1,5 @@
 package com.minesweeper.test.service;
 
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -10,6 +9,7 @@ import javax.inject.Inject;
 import org.springframework.stereotype.Service;
 
 import com.minesweeper.test.domain.Game;
+import com.minesweeper.test.domain.repository.GameConstants;
 import com.minesweeper.test.domain.repository.GameRepository;
 import com.minesweeper.test.dto.GameResponse;
 
@@ -40,9 +40,6 @@ public class GameService {
 
 		createBoard(game);
 
-		game.setStatus(game.NEW);
-		game.setStartedOn(LocalTime.now());
-
 		gameRepository.save(game);
 
 		return game.toResponse();
@@ -50,38 +47,28 @@ public class GameService {
 
 	private void createBoard(Game game) {
 
-		final int ROWS = 6;
-		final int COLS = 6;
-		final double BOMB_PROBABILITY = 0.3;
+		boolean[][] bombs = new boolean[GameConstants.ROWS + 2][GameConstants.COLS + 2];
 
-		boolean[][] bombs = new boolean[ROWS + 2][COLS + 2];
-
-		for (int i = 1; i <= ROWS; i++) {
-			for (int j = 1; j <= COLS; j++) {
-				bombs[i][j] = (Math.random() < BOMB_PROBABILITY);
+		for (int i = 1; i <= GameConstants.ROWS; i++) {
+			for (int j = 1; j <= GameConstants.COLS; j++) {
+				bombs[i][j] = (Math.random() < GameConstants.BOMB_PROBABILITY);
 			}
 		}
 		
 		StringBuilder currentBoard = new StringBuilder();
-		for (int i = 1; i <= ROWS; i++) {
-			for (int j = 1; j <= COLS; j++) {
-				if (bombs[i][j]) {
-					System.out.print("* ");
-					currentBoard.append("*,");
-				} else {
-					System.out.print(". ");
-					currentBoard.append(".,");
-				}
+		for (int i = 1; i <= GameConstants.ROWS; i++) {
+			for (int j = 1; j <= GameConstants.COLS; j++) {
+				currentBoard.append(" ,");	
 			}
-			System.out.println();
 		}
 		
 		game.setCurrentBoard(currentBoard.toString());
 
-		int[][] solution = new int[ROWS + 2][COLS + 2];
+		
+		int[][] solution = new int[GameConstants.ROWS + 2][GameConstants.COLS + 2];
 
-		for (int i = 1; i <= ROWS; i++) {
-			for (int j = 1; j <= COLS; j++) {
+		for (int i = 1; i <= GameConstants.ROWS; i++) {
+			for (int j = 1; j <= GameConstants.COLS; j++) {
 				for (int ii = i - 1; ii <= i + 1; ii++) {
 					for (int jj = j - 1; jj <= j + 1; jj++) {
 						if (bombs[ii][jj]) {
@@ -92,13 +79,12 @@ public class GameService {
 			}
 		}
 
-		System.out.println();
 		StringBuilder solutionBoard = new StringBuilder();
-		for (int i = 1; i <= ROWS; i++) {
-			for (int j = 1; j <= COLS; j++) {
+		for (int i = 1; i <= GameConstants.ROWS; i++) {
+			for (int j = 1; j <= GameConstants.COLS; j++) {
 				if (bombs[i][j]) {
 					System.out.print("* ");
-					solutionBoard.append("*,");
+					solutionBoard.append(GameConstants.MINE + ",");
 				} else {
 					System.out.print(solution[i][j] + " ");
 					solutionBoard.append(solution[i][j] + ",");
